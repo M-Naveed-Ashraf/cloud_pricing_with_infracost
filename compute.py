@@ -22,6 +22,8 @@ import requests
 import json
 import time
 
+from constants.regions import REGIONS
+
 def update_prices():
     print("Function Start")
     data_clone = data
@@ -81,7 +83,7 @@ def update_prices():
                 # ######################################
                 
             print(f"Got the results for \"{machine}\" : ", json.dumps(all_results, indent=4))
-            
+            return
             print("Before Update \n\n")
             print(f"\"{machine}\": ", json.dumps(data_clone[machine], indent=2))
             print("\n\n")
@@ -112,4 +114,4 @@ def get_all_keys():
     print(key_list)
 
 # get_all_keys()
-update_prices()
+# update_prices()
