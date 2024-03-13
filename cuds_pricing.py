@@ -7,7 +7,7 @@ from constants.regions import REGIONS
 from constants.all_machine_types import all_machine_series
 
 
-def fetch_machine_series_prices(response_object, all_cuds_dict={}):
+def fetch_machine_series_prices(response_object, all_cuds_dict, purchase_option):
     machine_series = None
     resource_group = None
     usd_value = None
@@ -36,10 +36,13 @@ def fetch_machine_series_prices(response_object, all_cuds_dict={}):
             # Update the existing machine series object with the new region and its prices
             if region not in temp_dict[machine_series]:
                 temp_dict[machine_series][region] = {}
-            temp_dict[machine_series][region][resource_group] = usd_value
+            if purchase_option not in temp_dict[machine_series][region]:
+                temp_dict[machine_series][region][purchase_option] = {}
+            temp_dict[machine_series][region][purchase_option][resource_group] = usd_value
         else:
             # If machine series does not exist, create a new entry for it in all_cuds
-            temp_dict[machine_series] = {region: {resource_group: usd_value}}
+            temp_dict[machine_series] = {
+                region: {purchase_option: {resource_group: usd_value}}}
 
     return temp_dict
 
@@ -105,7 +108,8 @@ def update_prices():
                 purchase_option = prices.get("purchaseOption", '')
                 if purchase_option == "Commit1Yr" or purchase_option == 'Commit3Yr':
                     # print("Product with CUDs price ", product)
-                    output = fetch_machine_series_prices(product, all_cuds)
+                    output = fetch_machine_series_prices(
+                        product, all_cuds, purchase_option)
                     print("Product with CUDs price ", output)
                     all_cuds = output
                 continue
