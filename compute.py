@@ -115,3 +115,5 @@ def get_all_keys():
 
 # get_all_keys()
 # update_prices()
+from constants.cuds import cuds_pricing
+print(len(cuds_pricing))
