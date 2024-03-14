@@ -8,15 +8,15 @@ from constants.utils import all_machine_series
 
 def create_dict_from_infracost_response(response_object, all_cuds_dict, purchase_option):
     """
-    Extracts relevant information from the response_object and constructs a dictionary of Compute Unit Discounts (CUDs).
+    Extracts relevant information from the response_object and constructs a dictionary of Commited Unit Discounts (CUDs).
 
     Args:
         response_object (dict): The response object received from the Infracost API.
-        all_cuds_dict (dict): Dictionary containing Compute Unit Discounts (CUDs).
+        all_cuds_dict (dict): Dictionary containing Commited Unit Discounts (CUDs).
         purchase_option (str): The purchase option for the resource.
 
     Returns:
-        dict: Updated dictionary of Compute Unit Discounts (CUDs).
+        dict: Updated dictionary of Commited Unit Discounts (CUDs).
     """
     machine_series = None
     resource_group = None
@@ -55,7 +55,7 @@ def create_dict_from_infracost_response(response_object, all_cuds_dict, purchase
 
 def fetch_cuds_prices_from_infracost():
     """
-    Fetches Compute Unit Discounts (CUDs) prices from the Infracost API and updates the CUDs dictionary.
+    Fetches Commited Unit Discounts (CUDs) prices from the Infracost API and updates the CUDs dictionary.
     """
     print("Fetching CUDs prices from Infracost API...")
     all_regions = REGIONS
