@@ -1,8 +1,6 @@
-# Compute Unit Discounts (CUDs) Pricing Calculator
-
-This project is aimed at providing a tool for calculating pricing based on Compute Unit Discounts (CUDs) for various machine types, regions, and purchase options within your organization's infrastructure. It consists of three main files:
-
 ## Files:
+
+It consists of three main files:
 
 1. **get_cuds_prices.py:**
    This file contains functions to calculate the pricing based on Compute Unit Discounts (CUDs) for different machine types, regions, and purchase options. It includes the following components:
@@ -24,16 +22,3 @@ To use the pricing calculator:
 2. Run `get_cuds_prices.py`.
 3. Provide the desired machine type, region, and purchase option (Commit1Yr, Commit3Yr).
 4. The script will calculate and display the hourly and monthly costs based on CUDs pricing.
-
-## Dependencies:
-
-- Python 3.x
-- Required packages (specified in `requirements.txt`)
-
-## Contributing:
-
-Contributions to this project are welcome. If you find any bugs or have suggestions for improvements, please feel free to open an issue or submit a pull request.
-
-## License:
-
-This project is licensed under the [MIT License](LICENSE).
