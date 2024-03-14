@@ -22,8 +22,6 @@ import requests
 import json
 import time
 
-from constants.regions import REGIONS
-
 def update_prices():
     print("Function Start")
     data_clone = data
@@ -115,5 +113,3 @@ def get_all_keys():
 
 # get_all_keys()
 # update_prices()
-from constants.cuds import cuds_pricing
-print(len(cuds_pricing))
