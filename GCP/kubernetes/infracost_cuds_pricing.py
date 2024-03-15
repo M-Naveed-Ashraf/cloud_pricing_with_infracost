@@ -59,10 +59,7 @@ def fetch_cuds_prices_from_infracost():
                 purchase_option = prices.get("purchaseOption", '')
                 if purchase_option in ["Commit1Yr", "Commit3Yr"]:
                     response_region = product.get("region", "")
-                    response_region = product.get("region", "")
-                    usd_value = None
-                    for price in product.get("prices", []):
-                        usd_value = price.get("USD")
+                    usd_value = prices.get("USD", None)
 
                     if response_region not in all_cuds:
                         all_cuds[response_region] = {}
