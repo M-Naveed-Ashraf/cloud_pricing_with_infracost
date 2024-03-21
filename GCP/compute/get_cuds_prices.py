@@ -4,45 +4,61 @@ from compute import data
 from constants.cuds import cuds_pricing
 
 
-def calculate_cuds_price(machine_type, region, purchase_option):
-    """
-    Calculates the price of Commited Unit Discounts (CUDs) for a given machine type, region, and purchase option.
+from typing import Optional, Dict, Literal
 
-    Args:
-        machine_type (str): The type of the machine.
-        region (str): The region where the machine is located.
-        purchase_option (str): The purchase option for the machine.
 
-    Returns:
-        tuple: A tuple containing the details of the machine and the calculated hourly and monthly costs.
-    """
-    machine_details = data[machine_type]["details"].get(region)
+def get_compute_cuds(machine_type: Optional[str] = None, region: str = None, cpu: Optional[str | int] = None, memory: Optional[str | int] = None, machine_series: Optional[(Literal["n2", "a2", "t2d", "m3", "c3", "h3", "e2", "g2", "c2"] | None)] = None) -> Dict[str, float]:
 
-    if machine_details:
+    if not machine_type and not cpu and not memory and not machine_series:
+        raise ValueError(
+            "At least one of machine_type, cpu, or memory must be provided.")
+
+    machine_details = None
+    cpu_used = None
+    memory_used = None
+
+    if machine_type:
+        machine_details = data[machine_type]["details"].get(region)
         machine_series = machine_details["Series"].lower()
         cpu_used = float(machine_details["vCPUs"])
         memory_used = float(machine_details["Memory"])
-
-        cuds_cpu_price = float(
-            cuds_pricing[machine_series][region][purchase_option]["CPU"])
-        cuds_ram_price = float(
-            cuds_pricing[machine_series][region][purchase_option]["RAM"])
-
-        hourly_cost = cpu_used * cuds_cpu_price + memory_used * cuds_ram_price
-        monthly_cost = hourly_cost * 730  # Assuming 730 hours in a month
-        return (
-            machine_details["vCPUs"],
-            machine_details["Memory"],
-            float(hourly_cost),
-            float(monthly_cost),
-        )
+    elif cpu and memory and machine_series:
+        machine_series = machine_series
+        cpu_used = float(cpu)
+        memory_used = float(memory)
     else:
-        return None
+        raise ValueError(
+            "Either machine_type or both cpu and memory must be provided.")
+
+    if machine_series and cpu_used and memory_used:
+
+        cuds_cpu_price_1y = float(
+            cuds_pricing[machine_series][region]["Commit1Yr"]["CPU"])
+        cuds_ram_price_1y = float(
+            cuds_pricing[machine_series][region]["Commit1Yr"]["RAM"])
+
+        hourly_cost = cpu_used * cuds_cpu_price_1y + memory_used * cuds_ram_price_1y
+        monthly_cost_1y = hourly_cost * 730  # Assuming 730 hours in a month
+
+        cuds_cpu_price_3y = float(
+            cuds_pricing[machine_series][region]["Commit3Yr"]["CPU"])
+        cuds_ram_price_3y = float(
+            cuds_pricing[machine_series][region]["Commit3Yr"]["RAM"])
+
+        hourly_cost = cpu_used * cuds_cpu_price_3y + memory_used * cuds_ram_price_3y
+        monthly_cost_3y = hourly_cost * 730  # Assuming 730 hours in a month
+
+        return {
+            "Commit1Yr": round(monthly_cost_1y, 2),
+            "Commit3Yr": round(monthly_cost_3y, 2)
+        }
+    else:
+        return {
+            "Commit1Yr": -1,
+            "Commit3Yr": -1
+        }
 
 
-# Example usage
-output_1yr = calculate_cuds_price("e2-medium", "us-central1", "Commit1Yr")
-output_3yr = calculate_cuds_price("e2-medium", "us-central1", "Commit3Yr")
-
-print("1-year CUDs price:", output_1yr)
-print("3-year CUDs price:", output_3yr)
+output = get_compute_cuds(machine_series="e2", cpu=2,
+                          memory=4, region="us-central1")
+print(output)

@@ -48,29 +48,31 @@ def fetch_cuds_prices_from_infracost():
     response = requests.post(api_url, headers=headers,
                              json={"query": query}, stream=True)
     print(response)
+    i = 0
     if response.status_code == 200:
         all_results = response.json().get("data", {})
 
         all_cuds = {}
-        service = ""
-        tag = ""
 
         for product in all_results.get("products", []):
+            print("product: ", product)
             for attribute in product.get("attributes", []):
+                service = ""
+                tag = ""
                 attribute_description = attribute.get("value", '')
                 if "Cloud SQL for MySQL" in attribute_description:
                     service = "MySQL"
-                    continue
+                    # continue
                 elif "Cloud SQL for PostgreSQL" in attribute_description:
                     service = "PostgreSQL"
                 elif "Cloud SQL for SQL Server" in attribute_description:
                     service = "SQL"
-                    continue
-                if "Network" in attribute_description:
-                    continue
+                    # continue
+                # if "Network" in attribute_description:
+                    # continue
 
-                attribute_description_lst = attribute_description.split(":")
-                print(attribute_description_lst)
+                attribute_description_lst = attribute_description.split(
+                    ": ")
                 if len(attribute_description_lst) > 1:
                     tag = attribute_description_lst[1]
                 if service and tag:
@@ -85,7 +87,8 @@ def fetch_cuds_prices_from_infracost():
                     if service not in all_cuds[response_region]:
                         all_cuds[response_region][service] = {}
 
-                    print(response_region, service, tag)
+                    print("Region: {}, Service: {}, Tag: {}".format(
+                        response_region, service, tag))
                     all_cuds[response_region][service][tag] = usd_value
                     # if "1 year" in attribute_description:
                     #     all_cuds[response_region]["Commit1Yr"] = usd_value
