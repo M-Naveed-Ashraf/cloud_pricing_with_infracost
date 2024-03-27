@@ -115,7 +115,7 @@ def fetch_cuds_prices_from_infracost():
         print("CUDs prices successfully updated.")
         time.sleep(30)  # Adding a delay to avoid overloading the API
     else:
-        print("Error in API Call")
+        print("Error in API Call ", response.text)
 
 
 fetch_cuds_prices_from_infracost()

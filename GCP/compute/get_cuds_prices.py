@@ -1,7 +1,7 @@
 # get_cuds_prices.py
 
-from compute import data
-from constants.cuds import cuds_pricing
+from .compute import data
+from .constants.cuds import cuds_pricing
 
 
 from typing import Optional, Dict, Literal
@@ -59,6 +59,9 @@ def get_compute_cuds(machine_type: Optional[str] = None, region: str = None, cpu
         }
 
 
-output = get_compute_cuds(machine_series="e2", cpu=2,
-                          memory=4, region="us-central1")
+output = {
+    "cuds": get_compute_cuds(machine_type="e2-micro", region="us-central1")
+}
+# output = get_compute_cuds(machine_series="e2", cpu=2,
+#                           memory=4, region="us-central1")
 print(output)

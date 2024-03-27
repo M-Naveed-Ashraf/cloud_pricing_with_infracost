@@ -28048,3 +28048,26 @@ def get_compute_cuds(machine_type, region):
             "Commit1Yr": -1,
             "Commit3Yr": -1
         }
+
+from typing import Optional, Dict, Literal, Union
+
+
+def get_compute_preemptible_prices(machine_type: str, region: str) -> Dict[str, float]:
+    from .new_compute_data import new_compute_data
+    try:
+        # print(new_compute_data[machine_type])
+        hourly_preemptible = float(new_compute_data[machine_type]["details"][region]["Hourly Cost preemptible"])
+        monthly_preemptible = float(new_compute_data[machine_type]["details"][region]["Monthly Cost preemptible"])
+
+        return {
+            "Hourly Cost preemptible": round(hourly_preemptible, 2),
+            "Monthly Cost preemptible": round(monthly_preemptible, 2)
+        }
+    except:
+        return {
+            "Hourly Cost preemptible": -1,
+            "Monthly Cost preemptible": -1
+        }
+
+data = get_compute_preemptible_prices(machine_type="e2-micro", region="us-central1")
+print("data: ", data)
