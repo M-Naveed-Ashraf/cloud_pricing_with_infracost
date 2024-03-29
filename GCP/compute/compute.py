@@ -28069,5 +28069,27 @@ def get_compute_preemptible_prices(machine_type: str, region: str) -> Dict[str, 
             "Monthly Cost preemptible": -1
         }
 
-data = get_compute_preemptible_prices(machine_type="e2-micro", region="us-central1")
+def get_custom_machine_preemptible_prices(region: str = None, cpu: Optional[Union[str, int]] = None, memory: Optional[Union[str, int]] = None, machine_series: Optional[Union[Literal["n2", "a2", "t2d", "m3", "c3", "h3", "e2", "g2", "c2"], None]] = None) -> float:
+    from .constants.cuds import cuds_pricing
+    try:
+        if not cpu or not memory or not machine_series:
+            raise ValueError("machine_series, cpu, and memory must be provided.")
+        machine_series = machine_series
+        cpu_used = float(cpu)
+        memory_used = float(memory)
+
+        spot_cpu_price = float(
+            cuds_pricing[machine_series][region]["Preemptible"]["CPU"])
+        spot_ram_price = float(
+            cuds_pricing[machine_series][region]["Preemptible"]["RAM"])
+
+        hourly_cost = cpu_used * spot_cpu_price + memory_used * spot_ram_price
+        monthly_cost = hourly_cost * 730  # Assuming 730 hours in a month
+
+        return monthly_cost
+    except:
+        -1
+    
+data = get_custom_machine_preemptible_prices(cpu="2", memory="4", machine_series="e2", region="us-central1")
+# data = get_compute_preemptible_prices(machine_type="e2-micro", region="us-central1")
 print("data: ", data)

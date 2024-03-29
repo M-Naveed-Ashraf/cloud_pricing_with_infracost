@@ -1,9 +1,10 @@
 import requests
 import json
 import time
+import os
 
-from constants.utils import REGIONS
-from constants.utils import all_machine_series
+from .constants.utils import REGIONS
+from .constants.utils import all_machine_series
 
 
 def create_dict_from_infracost_response(response_object, all_cuds_dict, purchase_option):
@@ -104,13 +105,20 @@ def fetch_cuds_prices_from_infracost():
         for product in all_results:
             for prices in product.get("prices", []):
                 purchase_option = prices.get("purchaseOption", '')
-                if purchase_option in ["Commit1Yr", "Commit3Yr"]:
+                if purchase_option in ["Commit1Yr", "Commit3Yr", "Preemptible"]:
                     all_cuds = create_dict_from_infracost_response(
                         product, all_cuds, purchase_option)
                     print("Product with CUDs price:", all_cuds)
 
-        with open("constants/cuds.py", 'w') as file:
-            file.write(f"cuds_pricing = {all_cuds} \n")
+        all_cuds_response = json.dumps(
+            all_cuds, indent=2)
+        # Constructing the file path dynamically
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        constants_dir = os.path.join(current_dir, 'constants')
+        new_data_file = os.path.join(
+            constants_dir, "cuds.py")
+        with open(new_data_file, 'w') as file:
+            file.write(f"cuds_pricing = {all_cuds_response} \n")
 
         print("CUDs prices successfully updated.")
         time.sleep(30)  # Adding a delay to avoid overloading the API
